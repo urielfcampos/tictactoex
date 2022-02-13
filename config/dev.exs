@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :tictactoex, Tictactoex.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "root",
   hostname: "localhost",
   database: "tictactoex_dev",
   show_sensitive_data_on_connection_error: true,

@@ -1,12 +1,17 @@
 defmodule TictactoexWeb.Router do
   use TictactoexWeb, :router
+  alias TictactoexWeb.Plugs.SetUserId
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
+    plug SetUserId
   end
 
   scope "/api", TictactoexWeb do
     pipe_through :api
+
+    resources "/game", GameController, except: [:delete]
   end
 
   # Enables LiveDashboard only for development
