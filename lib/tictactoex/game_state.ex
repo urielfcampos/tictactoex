@@ -101,4 +101,57 @@ defmodule Tictactoex.GameState do
   def change_game(%Game{} = game, attrs \\ %{}) do
     Game.changeset(game, attrs)
   end
+
+  def player_turn?(game, player_id) do
+    if game.current_player == player_id do
+      {:ok, game}
+    else
+      {:error, :not_player_turn}
+    end
+  end
+
+  def play(game, player_id, play) do
+    current_table = game.table
+    %{"x" => x, "y" => y} = play
+
+    case Map.get(current_table, {x, y}, "") do
+      "" ->
+        {:ok, Map.update(current_table, {x, y}, "", player_id)}
+
+      _cell ->
+        {:error, :cell_already_played}
+    end
+  end
+
+  def won?(table, current_player) do
+    table_grouped = Enum.group_by(table, fn {_, v} -> v end, fn {k, _} -> k end)
+    play_count = length(table_grouped[current_player])
+
+    cond do
+      play_count > 3 ->
+        all_combinations = Comb.combinations(table_grouped[current_player], 3)
+        match_line_or_column(all_combinations)
+
+      play_count == 3 ->
+        match_line_or_column([table_grouped[current_player]])
+
+      play_count <= 2 ->
+        false
+    end
+  end
+
+  defp match_line_or_column(elements) do
+    Enum.any?(elements, fn el ->
+      case el do
+        [{x, _}, {x, _}, {x, _}] ->
+          true
+
+        [{_, x}, {_, x}, [_, x]] ->
+          true
+
+        _ ->
+          false
+      end
+    end)
+  end
 end

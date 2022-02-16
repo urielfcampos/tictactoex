@@ -40,15 +40,23 @@ defmodule TictactoexWeb.GameController do
     end
   end
 
-  def play(conn, %{"id" => id}) do
+  def play(conn, %{"id" => id, "play" => play}) do
     game = GameState.get_game!(id)
     player_id = get_session(conn, :player_id)
-    players = [player_id | game.players]
-    game_params = %{"players" => players}
+    game_params = do_play(play, game, player_id)
 
     with {:ok, %Game{} = game} <- GameState.update_game(game, game_params) do
       render(conn, "show.json", game: game)
     end
   end
 
+  defp do_play(play, game, player_id) do
+    with {:ok, game} <- GameState.player_turn?(game, player_id),
+         {:ok, new_table} <- GameState.play(game, player_id, play) do
+      case GameState.won?(new_table, player_id) do
+        true -> %{"table" => new_table, "current_player" => player_id, "winner" => player_id}
+        false -> %{"table" => new_table, "current_player" => player_id, "winner" => player_id}
+      end
+    end
+  end
 end
