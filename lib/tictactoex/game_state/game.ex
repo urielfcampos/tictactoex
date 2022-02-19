@@ -9,7 +9,7 @@ defmodule Tictactoex.GameState.Game do
     field :players, {:array, :string}
     field :winner, :string
     field :status, :string
-    field :winning_play, {:array, :string}
+    field :winning_play, {:array, {:array, :integer}}, default: nil
     timestamps()
   end
 

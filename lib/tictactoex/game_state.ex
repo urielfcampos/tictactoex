@@ -133,12 +133,14 @@ defmodule Tictactoex.GameState do
     cond do
       play_count > 3 ->
         all_combinations = Comb.combinations(table_grouped[current_player], 3)
-        match_line_or_column(all_combinations)
+        match_check = match_line_or_column(all_combinations)
+        if match_check, do: {true, match_check}, else: {false, []}
 
       play_count == 3 ->
-        match_line_or_column([table_grouped[current_player]])
+        match_check = match_line_or_column([table_grouped[current_player]])
+        if match_check, do: {true, match_check}, else: {false, []}
 
-      play_count <= 2 ->
+      play_count < 3 ->
         {false, []}
     end
   end
@@ -148,16 +150,13 @@ defmodule Tictactoex.GameState do
   end
 
   def match_line_or_column(elements) do
-    Enum.find(elements, fn el ->
+    Enum.find(elements, false, fn el ->
       case el do
-        [[x, _], [x, _], [x, _]] ->
-          true
+        [[x, _a], [x, _b], [x, _c]] -> true
 
-        [[_, x], [_, x], [_, x]] ->
-          true
+        [[_a, x], [_b, x], [_c, x]] -> true
 
-        _ ->
-          false
+        _ -> false
       end
     end)
   end
