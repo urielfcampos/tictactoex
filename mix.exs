@@ -44,7 +44,10 @@ defmodule Tictactoex.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:comb, git: "https://github.com/tallakt/comb.git"}
+      {:comb, git: "https://github.com/tallakt/comb.git"},
+      {:guardian, "~> 2.0"},
+      {:guardian_db, "~> 2.0"},
+      {:bcrypt_elixir, "~> 3.0"}
     ]
   end
 

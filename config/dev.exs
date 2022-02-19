@@ -25,6 +25,10 @@ config :tictactoex, TictactoexWeb.Endpoint,
   secret_key_base: "RnbJPft/y/vf6Ah28ajyvnDr0/tWKrutIoGX6EYgJz6JBawwnqXuQHGVDTr3PVZL",
   watchers: []
 
+config :tictactoex, Tictactoex.Guardian,
+  issuer: "tictactoex",
+  secret_key: "EE8PWaJ/ZS9sTQO3XYDJdxXSgLTSuDQMyJyX3KZyUsKsuzC28il39dKKu9yDrWz5"
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

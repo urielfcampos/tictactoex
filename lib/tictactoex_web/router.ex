@@ -8,13 +8,32 @@ defmodule TictactoexWeb.Router do
     plug SetUserId
   end
 
+  pipeline :maybe_api_auth do
+    plug Tictactoex.Guardian.Pipeline
+  end
+
+  pipeline :secured_api do
+    plug Guardian.Plug.EnsureAuthenticated
+  end
+
   scope "/api", TictactoexWeb do
-    pipe_through :api
+    pipe_through [:api, :maybe_api_auth, :secured_api]
 
     resources "/game", GameController, only: [:index, :show, :create]
     put "/game/:game_id/join", GameController, :join
     put "/game/:game_id/play", GameController, :play
+
+    get "/user/:id", UserController, :show
   end
+
+  scope "/auth", TictactoexWeb do
+    pipe_through [:api, :maybe_api_auth]
+
+    post "/user", UserController, :create
+    post "/login", AuthController, :create
+    delete "/login", AuthController, :delete
+  end
+
 
   # Enables LiveDashboard only for development
   #
