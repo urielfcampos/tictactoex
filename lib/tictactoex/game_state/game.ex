@@ -8,23 +8,34 @@ defmodule Tictactoex.GameState.Game do
     field :current_player_turn, :string
     field :players, {:array, :string}
     field :winner, :string
-
+    field :status, :string
+    field :winning_play, {:array, :string}
     timestamps()
   end
 
   @doc false
   def changeset(game, attrs) do
     game
-    |> set_values()
-    |> cast(attrs, [:players])
+    |> cast(attrs, [
+      :players,
+      :active?,
+      :current_player_turn,
+      :winner,
+      :status,
+      :winning_play,
+      :table
+    ])
     |> validate_required([:players])
     |> validate_player_size(attrs)
   end
 
   def create_changeset(game, attrs) do
+    status = Tictactoex.GameState.GameStatus.get_status(:start, "start")
+
     game
+    |> Map.put(:status, status)
     |> set_values()
-    |> cast(attrs, [:players])
+    |> cast(attrs, [:players, :table])
     |> validate_required([:players])
   end
 
@@ -35,9 +46,7 @@ defmodule Tictactoex.GameState.Game do
   end
 
   defp empty_game_table do
-    %{
-      table: []
-    }
+    Tictactoex.GameState.empty_table()
   end
 
   @max_player_count 2
@@ -52,4 +61,6 @@ defmodule Tictactoex.GameState.Game do
       game
     end
   end
+
+  defp validate_player_size(game, _players), do: game
 end

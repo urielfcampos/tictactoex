@@ -29,24 +29,50 @@ defmodule TictactoexWeb.GameController do
     render(conn, "show.json", game: game)
   end
 
-  def join(conn, %{"id" => id}) do
+  def join(conn, %{"game_id" => id}) do
     game = GameState.get_game!(id)
     player_id = get_session(conn, :player_id)
-    players = [player_id | game.players]
-    game_params = %{"players" => players}
+    start_status = Tictactoex.GameState.GameStatus.get_status(:start, "start")
 
-    with {:ok, %Game{} = game} <- GameState.update_game(game, game_params) do
-      render(conn, "show.json", game: game)
+    if player_id in game.players do
+      render(conn, "error.json", error_message: "Can't join a game you're already in")
+    else
+      players = [player_id | game.players]
+
+      game_params = %{
+        "players" => players,
+        "active?" => true,
+        "status" => start_status,
+        "current_player_turn" => List.last(players)
+      }
+
+      with {:ok, %Game{} = game} <- GameState.update_game(game, game_params) do
+        render(conn, "show.json", game: game)
+      end
     end
   end
 
-  def play(conn, %{"id" => id, "play" => play}) do
+  def play(conn, %{"game_id" => id, "play" => play}) do
     game = GameState.get_game!(id)
     player_id = get_session(conn, :player_id)
-    game_params = do_play(play, game, player_id)
 
-    with {:ok, %Game{} = game} <- GameState.update_game(game, game_params) do
-      render(conn, "show.json", game: game)
+    if player_id not in game.players do
+      render(conn, "error.json", error_message: "You are not participating in this match")
+    else
+      game_params = do_play(play, game, player_id)
+
+      case game_params do
+        {:error, :not_player_turn} ->
+          render(conn, "error.json", error_message: "It's not your turn")
+
+        {:error, :cell_already_played} ->
+          render(conn, "error.json", error_message: "Can't play this cell")
+
+        params ->
+          with {:ok, %Game{} = game} <- GameState.update_game(game, params) do
+            render(conn, "show.json", game: game)
+          end
+      end
     end
   end
 
@@ -54,9 +80,32 @@ defmodule TictactoexWeb.GameController do
     with {:ok, game} <- GameState.player_turn?(game, player_id),
          {:ok, new_table} <- GameState.play(game, player_id, play) do
       case GameState.won?(new_table, player_id) do
-        true -> %{"table" => new_table, "current_player" => player_id, "winner" => player_id}
-        false -> %{"table" => new_table, "current_player" => player_id, "winner" => player_id}
+        {true, play} ->
+          %{
+            "table" => new_table,
+            "current_player_turn" => GameState.next_player(game, player_id),
+            "winner" => player_id,
+            "winning_play" => play
+          }
+
+        {false, _} ->
+          %{
+            "table" => new_table,
+            "current_player_turn" => GameState.next_player(game, player_id)
+          }
       end
+    else
+      {:error, error} ->
+        handle_error(game, error)
+    end
+  end
+
+  defp handle_error(game, error) do
+    if GameState.draw?(game.table) do
+      status = Tictactoex.GameState.GameStatus.get_status(:final, "draw")
+      %{"status" => status}
+    else
+      {:error, error}
     end
   end
 end

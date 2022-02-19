@@ -103,7 +103,7 @@ defmodule Tictactoex.GameState do
   end
 
   def player_turn?(game, player_id) do
-    if game.current_player == player_id do
+    if game.current_player_turn == player_id do
       {:ok, game}
     else
       {:error, :not_player_turn}
@@ -112,19 +112,22 @@ defmodule Tictactoex.GameState do
 
   def play(game, player_id, play) do
     current_table = game.table
-    %{"x" => x, "y" => y} = play
+    {index, cell} = Enum.find(current_table, fn {_k, v} -> v["coordinates"] == play end)
 
-    case Map.get(current_table, {x, y}, "") do
+    case cell["content"] do
       "" ->
-        {:ok, Map.update(current_table, {x, y}, "", player_id)}
+        new_cell = %{"content" => player_id, "coordinates" => cell["coordinates"]}
+        {:ok, Map.replace(current_table, index, new_cell)}
 
-      _cell ->
+      _ ->
         {:error, :cell_already_played}
     end
   end
 
   def won?(table, current_player) do
-    table_grouped = Enum.group_by(table, fn {_, v} -> v end, fn {k, _} -> k end)
+    table_grouped =
+      Enum.group_by(table, fn {_, v} -> v["content"] end, fn {_, v} -> v["coordinates"] end)
+
     play_count = length(table_grouped[current_player])
 
     cond do
@@ -136,22 +139,41 @@ defmodule Tictactoex.GameState do
         match_line_or_column([table_grouped[current_player]])
 
       play_count <= 2 ->
-        false
+        {false, []}
     end
   end
 
-  defp match_line_or_column(elements) do
-    Enum.any?(elements, fn el ->
+  def draw?(table) do
+    Enum.all?(table, fn {_, v} -> v["content"] == "" end)
+  end
+
+  def match_line_or_column(elements) do
+    Enum.find(elements, fn el ->
       case el do
-        [{x, _}, {x, _}, {x, _}] ->
+        [[x, _], [x, _], [x, _]] ->
           true
 
-        [{_, x}, {_, x}, [_, x]] ->
+        [[_, x], [_, x], [_, x]] ->
           true
 
         _ ->
           false
       end
     end)
+  end
+
+  def next_player(game, player_id) do
+    Enum.find(game.players, &(&1 != player_id))
+  end
+
+  def empty_table do
+    all_cells =
+      for x <- 1..3, y <- 1..3 do
+        %{coordinates: [x, y], content: ""}
+      end
+
+    all_cells
+    |> Enum.with_index()
+    |> Enum.into(%{}, fn {k, v} -> {v, k} end)
   end
 end

@@ -11,7 +11,9 @@ defmodule TictactoexWeb.Router do
   scope "/api", TictactoexWeb do
     pipe_through :api
 
-    resources "/game", GameController, except: [:delete]
+    resources "/game", GameController, only: [:index, :show, :create]
+    put "/game/:game_id/join", GameController, :join
+    put "/game/:game_id/play", GameController, :play
   end
 
   # Enables LiveDashboard only for development

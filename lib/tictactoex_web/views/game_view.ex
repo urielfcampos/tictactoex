@@ -20,4 +20,8 @@ defmodule TictactoexWeb.GameView do
       players: game.players
     }
   end
+
+  def render("error.json", %{error_message: error}) do
+    %{errors: %{detail: error}}
+  end
 end
