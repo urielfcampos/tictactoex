@@ -1,4 +1,7 @@
 defmodule Tictactoex.ErrorHandler do
+  @moduledoc """
+    Module to handle errors from Guardian.Pipeline
+  """
   import Plug.Conn
 
   @behaviour Guardian.Plug.ErrorHandler

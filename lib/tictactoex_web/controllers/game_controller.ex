@@ -56,9 +56,7 @@ defmodule TictactoexWeb.GameController do
     game = GameState.get_game!(id)
     player_id = get_session(conn, :player_id)
 
-    if player_id not in game.players do
-      render(conn, "error.json", error_message: "You are not participating in this match")
-    else
+    if player_id in game.players do
       game_params = do_play(play, game, player_id)
 
       case game_params do
@@ -73,6 +71,8 @@ defmodule TictactoexWeb.GameController do
             render(conn, "show.json", game: game)
           end
       end
+    else
+      render(conn, "error.json", error_message: "You are not participating in this match")
     end
   end
 
@@ -80,6 +80,7 @@ defmodule TictactoexWeb.GameController do
     with {:ok, game} <- GameState.player_turn?(game, player_id),
          {:ok, new_table} <- GameState.play(game, player_id, play) do
       won = GameState.won?(new_table, player_id)
+
       case won do
         {true, play} ->
           %{

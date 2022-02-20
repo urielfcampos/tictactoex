@@ -34,7 +34,6 @@ defmodule TictactoexWeb.Router do
     delete "/login", AuthController, :delete
   end
 
-
   # Enables LiveDashboard only for development
   #
   # If you want to use the LiveDashboard in production, you should put
