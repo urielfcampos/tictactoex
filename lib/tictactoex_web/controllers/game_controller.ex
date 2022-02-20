@@ -80,6 +80,7 @@ defmodule TictactoexWeb.GameController do
     with {:ok, game} <- GameState.player_turn?(game, player_id),
          {:ok, new_table} <- GameState.play(game, player_id, play) do
       won = GameState.won?(new_table, player_id)
+
       case won do
         {true, play} ->
           %{

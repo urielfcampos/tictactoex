@@ -153,9 +153,7 @@ defmodule Tictactoex.GameState do
     Enum.find(elements, false, fn el ->
       case el do
         [[x, _a], [x, _b], [x, _c]] -> true
-
         [[_a, x], [_b, x], [_c, x]] -> true
-
         _ -> false
       end
     end)
