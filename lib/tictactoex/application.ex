@@ -15,9 +15,10 @@ defmodule Tictactoex.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Tictactoex.PubSub},
       # Start the Endpoint (http/https)
-      TictactoexWeb.Endpoint
+      TictactoexWeb.Endpoint,
       # Start a worker by calling: Tictactoex.Worker.start_link(arg)
       # {Tictactoex.Worker, arg}
+      {Guardian.DB.Token.SweeperServer, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

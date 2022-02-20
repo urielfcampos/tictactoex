@@ -37,6 +37,12 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :guardian, Guardian.DB,
+  repo: Tictactoex.Repo, # Add your repository module
+  schema_name: "guardian_tokens", # default
+  token_types: ["refresh_token"], # store all token types if not set
+  sweep_interval: 60 # default: 60 minutes
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
