@@ -135,4 +135,4 @@ jobs:
       - name: Run tests 
         run: mix test
         env:
-          POSTGRES_HOST: postgres
+          POSTGRES_HOST: localhost
