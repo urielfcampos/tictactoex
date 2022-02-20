@@ -11,10 +11,11 @@ defmodule Tictactoex.GameStateFixtures do
     {:ok, game} =
       attrs
       |> Enum.into(%{
-        active: "some active",
-        current_player_turn: "some current_player_turn",
-        players: "some players",
-        winner: "some winner"
+        active?: true,
+        current_player_turn: "1",
+        players: ["1", "2"],
+        winner: "1",
+        table: Tictactoex.GameState.empty_table()
       })
       |> Tictactoex.GameState.create_game()
 

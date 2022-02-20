@@ -19,6 +19,7 @@ defmodule Tictactoex.Account.User do
     |> cast(attrs, [:email, :bare_password])
     |> validate_required([:email, :bare_password])
     |> hash_password()
+    |> unique_constraint(:email)
   end
 
   defp hash_password(%Ecto.Changeset{valid?: true} = user) do

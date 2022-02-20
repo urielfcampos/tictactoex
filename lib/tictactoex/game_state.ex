@@ -166,11 +166,11 @@ defmodule Tictactoex.GameState do
   def empty_table do
     all_cells =
       for x <- 1..3, y <- 1..3 do
-        %{coordinates: [x, y], content: ""}
+        %{"coordinates "=> [x, y], "content" => ""}
       end
 
     all_cells
     |> Enum.with_index()
-    |> Enum.into(%{}, fn {k, v} -> {v, k} end)
+    |> Enum.into(%{}, fn {k, v} -> {Integer.to_string(v), k} end)
   end
 end

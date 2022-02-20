@@ -1,11 +1,9 @@
 defmodule TictactoexWeb.Router do
   use TictactoexWeb, :router
-  alias TictactoexWeb.Plugs.SetUserId
 
   pipeline :api do
     plug :accepts, ["json"]
     plug :fetch_session
-    plug SetUserId
   end
 
   pipeline :maybe_api_auth do

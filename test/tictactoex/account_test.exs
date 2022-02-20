@@ -17,15 +17,16 @@ defmodule Tictactoex.AccountTest do
 
     test "get_user!/1 returns the user with given id" do
       user = user_fixture()
-      assert Account.get_user!(user.id) == user
+      db_user = Account.get_user!(user.id)
+      assert db_user == user
     end
 
     test "create_user/1 with valid data creates a user" do
-      valid_attrs = %{email: "some email", password: "some password"}
+      valid_attrs = %{email: "some email", bare_password: "some password"}
 
       assert {:ok, %User{} = user} = Account.create_user(valid_attrs)
       assert user.email == "some email"
-      assert user.password == "some password"
+      refute user.password == ""
     end
 
     test "create_user/1 with invalid data returns error changeset" do
@@ -34,11 +35,11 @@ defmodule Tictactoex.AccountTest do
 
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
-      update_attrs = %{email: "some updated email", password: "some updated password"}
+      update_attrs = %{email: "some updated email", bare_password: "some updated password"}
 
-      assert {:ok, %User{} = user} = Account.update_user(user, update_attrs)
-      assert user.email == "some updated email"
-      assert user.password == "some updated password"
+      assert {:ok, %User{} = updated_user} = Account.update_user(user, update_attrs)
+      assert updated_user.email == "some updated email"
+      refute updated_user.password == user.password
     end
 
     test "update_user/2 with invalid data returns error changeset" do

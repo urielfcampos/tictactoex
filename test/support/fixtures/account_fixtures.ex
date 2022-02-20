@@ -12,10 +12,10 @@ defmodule Tictactoex.AccountFixtures do
       attrs
       |> Enum.into(%{
         email: "some email",
-        password: "some password"
+        bare_password: "some password"
       })
       |> Tictactoex.Account.create_user()
 
-    user
+    Map.put(user, :bare_password, nil)
   end
 end
