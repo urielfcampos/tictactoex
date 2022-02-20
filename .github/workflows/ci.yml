@@ -3,7 +3,7 @@ on: push
 jobs:
   format:
     runs-on: ubuntu-latest
-    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    name: lint
     strategy:
       matrix:
         otp: ["24.2.1"]
@@ -19,7 +19,7 @@ jobs:
 
   credo:
     runs-on: ubuntu-latest
-    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    name: credo
     strategy:
       matrix:
         otp: ["24.2.1"]
@@ -35,7 +35,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    name: tests
     strategy:
       matrix:
         otp: ["24.2.1"]
