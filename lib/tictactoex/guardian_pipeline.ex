@@ -1,4 +1,8 @@
 defmodule Tictactoex.Guardian.Pipeline do
+  @moduledoc """
+    Plug pipeline to extract a token from the header
+    and load it
+  """
   use Guardian.Plug.Pipeline,
     otp_app: :tictactoex,
     error_handler: Tictactoex.ErrorHandler,

@@ -1,4 +1,9 @@
 defmodule Tictactoex.Guardian do
+  @moduledoc """
+    Guardian required implementation for signing JWT tokens and
+    grabbing resources based on the Token passed
+  """
+
   use Guardian, otp_app: :tictactoex
 
   def subject_for_token(%{id: id}, _claims) do

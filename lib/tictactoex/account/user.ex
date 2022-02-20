@@ -1,4 +1,7 @@
 defmodule Tictactoex.Account.User do
+  @moduledoc """
+    Schema for saving and manipulating user accounts
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

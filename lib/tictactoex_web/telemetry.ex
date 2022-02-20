@@ -1,4 +1,7 @@
 defmodule TictactoexWeb.Telemetry do
+  @moduledoc """
+    Module responsible for handling telemetry events
+  """
   use Supervisor
   import Telemetry.Metrics
 

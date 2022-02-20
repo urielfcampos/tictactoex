@@ -21,7 +21,12 @@ defmodule Tictactoex.GameStateTest do
     end
 
     test "create_game/1 with valid data creates a game" do
-      valid_attrs = %{active: "some active", current_player_turn: "some current_player_turn", players: "some players", winner: "some winner"}
+      valid_attrs = %{
+        active: "some active",
+        current_player_turn: "some current_player_turn",
+        players: "some players",
+        winner: "some winner"
+      }
 
       assert {:ok, %Game{} = game} = GameState.create_game(valid_attrs)
       assert game.active == "some active"
@@ -36,7 +41,13 @@ defmodule Tictactoex.GameStateTest do
 
     test "update_game/2 with valid data updates the game" do
       game = game_fixture()
-      update_attrs = %{active: "some updated active", current_player_turn: "some updated current_player_turn", players: "some updated players", winner: "some updated winner"}
+
+      update_attrs = %{
+        active: "some updated active",
+        current_player_turn: "some updated current_player_turn",
+        players: "some updated players",
+        winner: "some updated winner"
+      }
 
       assert {:ok, %Game{} = game} = GameState.update_game(game, update_attrs)
       assert game.active == "some updated active"

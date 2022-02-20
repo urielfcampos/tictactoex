@@ -2,9 +2,9 @@ import Config
 
 # Configure your database
 config :tictactoex, Tictactoex.Repo,
-  username: "postgres",
-  password: "root",
-  hostname: "localhost",
+  username: System.get_env("POSTGRES_USER"),
+  password: System.get_env("POSTGRES_PASSWORD"),
+  hostname: System.get_env("POSTGRES_HOST"),
   database: "tictactoex_dev",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10

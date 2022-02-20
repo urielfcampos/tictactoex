@@ -1,4 +1,8 @@
 defmodule Tictactoex.GameState.Game do
+  @moduledoc """
+    Schema to save the current game state
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 
