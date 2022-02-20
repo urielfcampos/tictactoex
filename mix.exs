@@ -47,7 +47,8 @@ defmodule Tictactoex.MixProject do
       {:comb, git: "https://github.com/tallakt/comb.git"},
       {:guardian, "~> 2.0"},
       {:guardian_db, "~> 2.0"},
-      {:bcrypt_elixir, "~> 3.0"}
+      {:bcrypt_elixir, "~> 3.0"},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
   end
 
