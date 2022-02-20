@@ -35,7 +35,7 @@ jobs:
           mix deps.get
           mix deps.compile
   format:
-    needs: depedencies
+    needs: dependencies
     runs-on: ubuntu-latest
     name: lint
     strategy:
@@ -63,7 +63,7 @@ jobs:
       - run: mix format --check-formatted
 
   credo:
-    needs: depedencies
+    needs: dependencies
     runs-on: ubuntu-latest
     name: credo
     strategy:
@@ -91,7 +91,7 @@ jobs:
       - run: mix credo
 
   test:
-    needs: depedencies
+    needs: dependencies
     runs-on: ubuntu-latest
     name: tests
     services:
