@@ -13,8 +13,8 @@ defmodule TictactoexWeb.GameController do
   end
 
   def create(conn, _params) do
-    player_id = get_session(conn, :player_id)
-    game_params = %{"players" => [player_id]}
+    current_user = Tictactoex.Guardian.Plug.current_resource(conn)
+    game_params = %{"players" => [current_user.id]}
 
     with {:ok, %Game{} = game} <- GameState.create_game(game_params) do
       conn

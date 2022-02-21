@@ -49,7 +49,8 @@ defmodule Tictactoex.MixProject do
       {:guardian_db, "~> 2.0"},
       {:bcrypt_elixir, "~> 3.0"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:ex_machina, "~> 2.7.0", only: :test},
     ]
   end
 

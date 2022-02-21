@@ -5,6 +5,8 @@ defmodule Tictactoex.Account.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+
   schema "users" do
     field :email, :string
     field :password, :string

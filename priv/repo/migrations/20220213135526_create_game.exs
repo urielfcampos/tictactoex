@@ -2,7 +2,8 @@ defmodule Tictactoex.Repo.Migrations.CreateGame do
   use Ecto.Migration
 
   def change do
-    create table(:game) do
+    create table(:game, primary_key: false) do
+      add :id, :uuid, primary_key: true
       add :table, {:map, :string}
       add :current_player_turn, :string
       add :active?, :boolean

@@ -30,3 +30,7 @@ config :logger, level: :warn
 config :phoenix, :plug_init_mode, :runtime
 
 config :bcrypt_elixir, :log_rounds, 4
+
+config :tictactoex, Tictactoex.Guardian,
+  issuer: "tictactoex",
+  secret_key: "EE8PWaJ/ZS9sTQO3XYDJdxXSgLTSuDQMyJyX3KZyUsKsuzC28il39dKKu9yDrWz5"

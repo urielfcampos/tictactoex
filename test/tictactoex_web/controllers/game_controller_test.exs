@@ -5,12 +5,6 @@ defmodule TictactoexWeb.GameControllerTest do
 
   alias Tictactoex.GameState.Game
 
-  @create_attrs %{
-    active: "some active",
-    current_player_turn: "some current_player_turn",
-    players: "some players",
-    winner: "some winner"
-  }
   @update_attrs %{
     active: "some updated active",
     current_player_turn: "some updated current_player_turn",
@@ -23,6 +17,7 @@ defmodule TictactoexWeb.GameControllerTest do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
+  @tag :authenticated
   describe "index" do
     test "lists all table_data", %{conn: conn} do
       conn = get(conn, Routes.game_path(conn, :index))
@@ -30,19 +25,20 @@ defmodule TictactoexWeb.GameControllerTest do
     end
   end
 
+  @tag :authenticated
   describe "create game" do
-    test "renders game when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.game_path(conn, :create), game: @create_attrs)
+    test "renders game when data is valid", %{conn: conn, auth_user: user} do
+      conn = post(conn, Routes.game_path(conn, :create))
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.game_path(conn, :show, id))
-
+      user_id = user.id
       assert %{
                "id" => ^id,
-               "active" => "some active",
-               "current_player_turn" => "some current_player_turn",
-               "players" => "some players",
-               "winner" => "some winner"
+               "active?" => false,
+               "current_player_turn" => nil,
+               "players" => [^user_id],
+               "winner" => nil
              } = json_response(conn, 200)["data"]
     end
 

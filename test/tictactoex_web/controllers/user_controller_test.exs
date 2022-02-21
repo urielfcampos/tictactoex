@@ -26,6 +26,7 @@ defmodule TictactoexWeb.UserControllerTest do
     end
   end
 
+  @tag :authenticated
   describe "create user" do
     test "renders user when data is valid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)

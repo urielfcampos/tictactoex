@@ -23,7 +23,7 @@ defmodule TictactoexWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import TictactoexWeb.ConnCase
-
+      import Tictactoex.Factory
       alias TictactoexWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing
@@ -34,6 +34,14 @@ defmodule TictactoexWeb.ConnCase do
   setup tags do
     pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Tictactoex.Repo, shared: not tags[:async])
     on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+
+    if tags[:authenticated] do
+      user = Tictactoex.Factory.insert(:user)
+      {:ok, token, _} = Tictactoex.Guardian.encode_and_sign(user)
+      conn = Phoenix.ConnTest.build_conn() |> Plug.Conn.put_req_header("authorization", "Bearer #{token}")
+      {:ok, conn: conn, auth_user: user}
+    else
+      {:ok, conn: Phoenix.ConnTest.build_conn()}
+    end
   end
 end
