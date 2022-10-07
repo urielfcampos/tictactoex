@@ -5,8 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        otp: ["24.2.1"]
-        elixir: ["1.13.3"]
+        otp: ["25.1.1"]
+        elixir: ["1.14.0"]
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.9.0
@@ -40,8 +40,8 @@ jobs:
     name: lint
     strategy:
       matrix:
-        otp: ["24.2.1"]
-        elixir: ["1.13.3"]
+        otp: ["25.1.1"]
+        elixir: ["1.14.0"]
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.9.0
@@ -68,8 +68,8 @@ jobs:
     name: credo
     strategy:
       matrix:
-        otp: ["24.2.1"]
-        elixir: ["1.13.3"]
+        otp: ["25.1.1"]
+        elixir: ["1.14.0"]
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.9.0
@@ -112,8 +112,8 @@ jobs:
       MIX_ENV: test
     strategy:
       matrix:
-        otp: ["24.2.1"]
-        elixir: ["1.13.3"]
+        otp: ["25.1.1"]
+        elixir: ["1.14.0"]
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.9.0

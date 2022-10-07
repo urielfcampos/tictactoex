@@ -33,6 +33,7 @@ defmodule TictactoexWeb.GameControllerTest do
 
       conn = get(conn, Routes.game_path(conn, :show, id))
       user_id = user.id
+
       assert %{
                "id" => ^id,
                "active?" => false,
