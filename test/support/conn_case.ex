@@ -38,7 +38,11 @@ defmodule TictactoexWeb.ConnCase do
     if tags[:authenticated] do
       user = Tictactoex.Factory.insert(:user)
       {:ok, token, _} = Tictactoex.Guardian.encode_and_sign(user)
-      conn = Phoenix.ConnTest.build_conn() |> Plug.Conn.put_req_header("authorization", "Bearer #{token}")
+
+      conn =
+        Phoenix.ConnTest.build_conn()
+        |> Plug.Conn.put_req_header("authorization", "Bearer #{token}")
+
       {:ok, conn: conn, auth_user: user}
     else
       {:ok, conn: Phoenix.ConnTest.build_conn()}

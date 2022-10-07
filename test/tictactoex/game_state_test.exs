@@ -71,32 +71,70 @@ defmodule Tictactoex.GameStateTest do
     end
 
     test "won?/2 returns true when a win condition occurs" do
+      game = win_game_fixture()
+
+      assert GameState.won?(game.table, "1")
     end
 
     test "won?/2 returns false when no win condition has occurred" do
+      game = game_fixture()
+
+      refute GameState.won?(game.table, "1")
     end
 
     test "play/3 updates the game table" do
+      game = game_fixture()
+
+      {:ok, table} = GameState.play(game, "1", [1, 1])
+
+      player_id = get_in(table, ["0", "content"])
+      assert player_id == "1"
     end
 
     test "play/3 fails when player tries to play an already played cell" do
+      game = game_fixture()
+
+      {:ok, table} = GameState.play(game, "1", [1, 1])
+
+      updated_game = Map.put(game, :table, table)
+
+      assert {:error, :cell_already_played} = GameState.play(updated_game, "2", [1, 1])
     end
 
     test "player_turn?/2 returns true when its a player's turn" do
+      {:ok, game} =
+        game_fixture() |> Tictactoex.GameState.update_game(%{current_player_turn: "1"})
+
+      assert {:ok, _game} = GameState.player_turn?(game, "1")
     end
 
     test "player_turn?/2 returns false when its not the player's turn" do
+      game = game_fixture()
+
+      assert {:error, :not_player_turn} = GameState.player_turn?(game, "2")
     end
 
     test "draw?/1 returns true when there are no more possible plays" do
+      game = draw_game_fixture()
+
+      assert GameState.draw?(game.table)
     end
 
     test "draw?/1 returns false when there are still possible plays" do
+      game = game_fixture()
+
+      refute GameState.draw?(game.table)
     end
 
     test "next_player/2 returns the next player turn" do
       [player_1, player_2] = insert_pair(:user)
-      game = insert(:game, players: [player_1.id, player_2.id], active?: true, current_player_turn: player_1.id)
+
+      game =
+        insert(:game,
+          players: [player_1.id, player_2.id],
+          active?: true,
+          current_player_turn: player_1.id
+        )
 
       assert GameState.next_player(game, player_1.id) == player_2.id
     end
@@ -105,15 +143,15 @@ defmodule Tictactoex.GameStateTest do
       empty_table = GameState.empty_table()
 
       assert empty_table == %{
-               "0" => %{"content" => "", "coordinates " => [1, 1]},
-               "1" => %{"content" => "", "coordinates " => [1, 2]},
-               "2" => %{"content" => "", "coordinates " => [1, 3]},
-               "3" => %{"content" => "", "coordinates " => [2, 1]},
-               "4" => %{"content" => "", "coordinates " => [2, 2]},
-               "5" => %{"content" => "", "coordinates " => [2, 3]},
-               "6" => %{"content" => "", "coordinates " => [3, 1]},
-               "7" => %{"content" => "", "coordinates " => [3, 2]},
-               "8" => %{"content" => "", "coordinates " => [3, 3]}
+               "0" => %{"content" => "", "coordinates" => [1, 1]},
+               "1" => %{"content" => "", "coordinates" => [1, 2]},
+               "2" => %{"content" => "", "coordinates" => [1, 3]},
+               "3" => %{"content" => "", "coordinates" => [2, 1]},
+               "4" => %{"content" => "", "coordinates" => [2, 2]},
+               "5" => %{"content" => "", "coordinates" => [2, 3]},
+               "6" => %{"content" => "", "coordinates" => [3, 1]},
+               "7" => %{"content" => "", "coordinates" => [3, 2]},
+               "8" => %{"content" => "", "coordinates" => [3, 3]}
              }
     end
   end

@@ -102,6 +102,11 @@ defmodule Tictactoex.GameState do
     Game.changeset(game, attrs)
   end
 
+  @doc """
+  Returns an `{:ok, game}` if the player_id matches the current_player_turn
+  else returns {:error, :not_player_turn}
+
+  """
   def player_turn?(game, player_id) do
     if game.current_player_turn == player_id do
       {:ok, game}
@@ -110,8 +115,13 @@ defmodule Tictactoex.GameState do
     end
   end
 
+  @doc """
+  Returns an updated game table with the given play
+  if the cell already has a play, it returns {:error, :cell_already_played}
+  """
   def play(game, player_id, play) do
     current_table = game.table
+
     {index, cell} = Enum.find(current_table, fn {_k, v} -> v["coordinates"] == play end)
 
     case cell["content"] do
@@ -124,41 +134,28 @@ defmodule Tictactoex.GameState do
     end
   end
 
+  @doc """
+  Returns a boolean to indicate if the current table has a win condition
+  """
   def won?(table, current_player) do
     table_grouped =
-      Enum.group_by(table, fn {_, v} -> v["content"] end, fn {_, v} -> v["coordinates"] end)
+      Enum.group_by(table, fn {_, row} -> row["content"] end, fn {_, row} ->
+        row["coordinates"]
+      end)
 
-    play_count = length(table_grouped[current_player])
-
-    cond do
-      play_count > 3 ->
-        all_combinations = Comb.combinations(table_grouped[current_player], 3)
-        match_check = match_line_or_column(all_combinations)
-        if match_check, do: {true, match_check}, else: {false, []}
-
-      play_count == 3 ->
-        match_check = match_line_or_column([table_grouped[current_player]])
-        if match_check, do: {true, match_check}, else: {false, []}
-
-      play_count < 3 ->
-        {false, []}
-    end
+    check_win(table_grouped[current_player])
   end
 
+  @doc """
+  Returns a boolean to indicate if the current table has a draw condition
+  """
   def draw?(table) do
-    Enum.all?(table, fn {_, v} -> v["content"] == "" end)
+    Enum.all?(table, fn {_, row} -> row["content"] != "" end)
   end
 
-  defp match_line_or_column(elements) do
-    Enum.find(elements, false, fn el ->
-      case el do
-        [[x, _a], [x, _b], [x, _c]] -> true
-        [[_a, x], [_b, x], [_c, x]] -> true
-        _ -> false
-      end
-    end)
-  end
-
+  @doc """
+  Returns the next player in the game
+  """
   def next_player(game, player_id) do
     Enum.find(game.players, &(&1 != player_id))
   end
@@ -166,11 +163,41 @@ defmodule Tictactoex.GameState do
   def empty_table do
     all_cells =
       for x <- 1..3, y <- 1..3 do
-        %{"coordinates "=> [x, y], "content" => ""}
+        %{"coordinates" => [x, y], "content" => ""}
       end
 
     all_cells
     |> Enum.with_index()
     |> Enum.into(%{}, fn {k, v} -> {Integer.to_string(v), k} end)
+  end
+
+  defp check_win(nil), do: false
+
+  defp check_win(player_moves) do
+    play_count = length(player_moves)
+
+    cond do
+      play_count > 3 ->
+        all_combinations = Comb.combinations(player_moves, 3)
+        match_check = find_win_condition(all_combinations)
+        if match_check, do: {true, match_check}, else: {false, []}
+
+      play_count == 3 ->
+        match_check = find_win_condition([player_moves])
+        if match_check, do: {true, match_check}, else: {false, []}
+
+      play_count < 3 ->
+        {false, []}
+    end
+  end
+
+  defp find_win_condition(elements) do
+    Enum.find(elements, false, fn el ->
+      case el do
+        [[x, _a], [x, _b], [x, _c]] -> true
+        [[_a, x], [_b, x], [_c, x]] -> true
+        _ -> false
+      end
+    end)
   end
 end
