@@ -69,5 +69,52 @@ defmodule Tictactoex.GameStateTest do
       game = game_fixture()
       assert %Ecto.Changeset{} = GameState.change_game(game)
     end
+
+    test "won?/2 returns true when a win condition occurs" do
+    end
+
+    test "won?/2 returns false when no win condition has occurred" do
+    end
+
+    test "play/3 updates the game table" do
+    end
+
+    test "play/3 fails when player tries to play an already played cell" do
+    end
+
+    test "player_turn?/2 returns true when its a player's turn" do
+    end
+
+    test "player_turn?/2 returns false when its not the player's turn" do
+    end
+
+    test "draw?/1 returns true when there are no more possible plays" do
+    end
+
+    test "draw?/1 returns false when there are still possible plays" do
+    end
+
+    test "next_player/2 returns the next player turn" do
+      [player_1, player_2] = insert_pair(:user)
+      game = insert(:game, players: [player_1.id, player_2.id], active?: true, current_player_turn: player_1.id)
+
+      assert GameState.next_player(game, player_1.id) == player_2.id
+    end
+
+    test "empty_table/0 returns a brand new game table" do
+      empty_table = GameState.empty_table()
+
+      assert empty_table == %{
+               "0" => %{"content" => "", "coordinates " => [1, 1]},
+               "1" => %{"content" => "", "coordinates " => [1, 2]},
+               "2" => %{"content" => "", "coordinates " => [1, 3]},
+               "3" => %{"content" => "", "coordinates " => [2, 1]},
+               "4" => %{"content" => "", "coordinates " => [2, 2]},
+               "5" => %{"content" => "", "coordinates " => [2, 3]},
+               "6" => %{"content" => "", "coordinates " => [3, 1]},
+               "7" => %{"content" => "", "coordinates " => [3, 2]},
+               "8" => %{"content" => "", "coordinates " => [3, 3]}
+             }
+    end
   end
 end

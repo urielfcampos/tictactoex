@@ -149,7 +149,7 @@ defmodule Tictactoex.GameState do
     Enum.all?(table, fn {_, v} -> v["content"] == "" end)
   end
 
-  def match_line_or_column(elements) do
+  defp match_line_or_column(elements) do
     Enum.find(elements, false, fn el ->
       case el do
         [[x, _a], [x, _b], [x, _c]] -> true
